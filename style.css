@@ -794,6 +794,8 @@ select option {
     grid-template-columns: repeat(auto-fill, minmax(96px, 1fr));
     gap: 10px;
     width: 100%;
+    /* The English alphabet always reads left-to-right, even in Hebrew UI */
+    direction: ltr;
 }
 
 .letterCell {
