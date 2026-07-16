@@ -1,0 +1,1373 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-R72F3FHJ8B"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag() { dataLayer.push(arguments); }
+    gtag('js', new Date());
+    gtag('config', 'G-R72F3FHJ8B');
+  </script>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0b1020">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="icon-512.png">
+  <link rel="manifest" href="manifest.json">
+  <title>ממלכת האותיות - הרפתקת ABC</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="translations.js"></script>
+  <script src="letters.js"></script>
+</head>
+
+<body>
+  <div id="mobileBlock">
+    <div style="font-size: 60px; margin-bottom: 20px;">📱</div>
+    <h2 style="margin-bottom: 10px;">ממלכת האותיות</h2>
+    <p style="font-size: 18px; font-weight: 700; color: var(--muted);">המשחק מותאם למחשבים ולטאבלטים בלבד.</p>
+    <p style="font-size: 14px; color: var(--muted); margin-top: 10px;">נא לפתוח את האתר ממכשיר עם מסך גדול יותר כדי
+      לשחק.</p>
+  </div>
+  <header>
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div>
+        <h1 data-t="headerTitle">ממלכת האותיות 🏰</h1>
+        <div class="sub" data-t="headerSub">ברוכים הבאים לממלכה! למדו את אותיות ה-ABC, אספו חיות נדירות ושברו שיאים.
+        </div>
+      </div>
+      <div class="controls">
+        <span class="pill"><span data-t="player">שחקן/ית:</span> <b id="activeProfileName">-</b></span>
+        <select id="langSelect" class="langSelect" title="Language">
+          <option value="he">🇮🇱 עברית</option>
+          <option value="en">🇺🇸 English</option>
+          <option value="de">🇩🇪 Deutsch</option>
+        </select>
+        <button class="btn icon" id="toggleSoundBtn" title="צלילים" type="button">🔊</button>
+        <button class="btn" id="leaderboardBtn" data-t="leaderboardBtn" type="button">טבלת האלופים</button>
+        <button class="btn" id="profilesBtn" data-t="profilesBtn" type="button">פרופילים</button>
+        <button class="btn danger" id="resetProfileBtn" data-t="resetBtn" type="button">איפוס התקדמות</button>
+        <button class="btn icon help" id="helpBtn" title="עזרה" type="button">?</button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="card">
+      <div class="hd">
+        <div class="controls">
+          <span class="pill"><span data-t="progressLabel">אותיות:</span> <b id="progressCount">0/26</b></span>
+        </div>
+      </div>
+
+      <div class="gridWrap">
+        <div id="grid" class="letterGrid" aria-label="Alphabet grid"></div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="bd">
+        <div class="gameBox">
+
+          <div class="stats">
+            <div class="stat">
+              <div class="k" data-t="scorePoints">נקודות</div>
+              <div class="v" id="totalPoints">0</div>
+            </div>
+            <div class="stat">
+              <div class="k" data-t="scoreAnimals">חיות</div>
+              <div class="v" id="animalsCount">0</div>
+            </div>
+            <div class="stat" id="crownsStat" style="display:none;">
+              <div class="k" data-t="scoreCrowns">כתרים</div>
+              <div class="v" id="crownsCount">0</div>
+            </div>
+          </div>
+
+
+          <div class="panel">
+            <div class="qTop">
+              <div class="pill" data-t="collectionTitle">אוסף חיות הפנטזיה</div>
+              <button class="btn tiny" id="openKingdomBtn" data-t="openKingdomBtn" type="button">צפה בכל
+                הממלכה</button>
+            </div>
+            <div class="collection" id="collection"></div>
+          </div>
+
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <div class="modalBack" id="modalBack" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Profiles">
+      <div class="mhd">
+        <div class="pill" data-t="profilesTitle">פרופילים</div>
+        <div class="controls">
+          <button class="btn" id="closeModalBtn" data-t="closeBtn" type="button">סגור</button>
+        </div>
+      </div>
+      <div class="mbd">
+        <div class="note" style="font-size: 18px; line-height: 1.5; font-weight: 700; color: var(--text);"
+          data-t="profileNote">
+          לכל פרופיל יש התקדמות ואוסף נפרדים. זה נשמר על המחשב הזה בלבד.
+        </div>
+
+        <div style="margin-top:12px;" class="profiles" id="profilesList"></div>
+
+        <div style="margin-top:14px;">
+          <div class="mhd">
+            <div class="pill" data-t="createProfileTitle">יצירת פרופיל חדש</div>
+          </div>
+          <div class="mbd">
+            <div class="controls formRow">
+              <input type="text" id="newProfileName" class="textInput" placeholder="שם (לדוגמה: ריף)"
+                data-t-placeholder="namePlace" />
+              <select id="newProfileAvatar" title="Avatar">
+                <option value="🦊">🦊</option>
+                <option value="🦁">🦁</option>
+                <option value="🦄">🦄</option>
+                <option value="🐸">🐸</option>
+                <option value="🐵">🐵</option>
+                <option value="🐼">🐼</option>
+                <option value="🐞">🐞</option>
+                <option value="🦋">🦋</option>
+              </select>
+              <button class="btn primary" id="createProfileBtn" data-t="createBtn" type="button">צור וכנס
+                לממלכה</button>
+            </div>
+          </div>
+          <div class="note" style="margin-top:10px;" data-t="profileTip">
+            טיפ: אפשר ליצור גם פרופיל לאחות, או מצב "אורח" בשביל חברים.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="letterModal" aria-hidden="true">
+    <div class="modal" style="width: min(520px, 100%);" role="dialog" aria-modal="true" aria-label="Letter">
+      <div class="mhd">
+        <div class="pill ltrText" id="letterModalPill">A</div>
+        <div class="controls">
+          <button class="btn" id="closeLetterBtn" data-t="closeBtn" type="button">סגור</button>
+        </div>
+      </div>
+      <div class="mbd">
+        <div class="bigLetter ltrText" id="letterModalChar">A a</div>
+        <div class="note" style="text-align:center; font-weight:800;" data-t="letterModalNote">בחרו שלב! השלמת שלב =
+          נקודות + חיית פלא. שלב חדש נפתח אחרי שמסיימים את הקודם.</div>
+        <div id="levelsList"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="levelModal" aria-hidden="true">
+    <div class="modal" style="width: min(560px, 100%);" role="dialog" aria-modal="true" aria-label="Level">
+      <div class="mhd">
+        <div class="pill" id="levelTitle">שלב</div>
+        <div class="controls">
+          <button class="btn icon help tiny" id="qHelpBtn" type="button">?</button>
+          <button class="btn" id="closeLevelBtn" data-t="closeBtn" type="button">סגור</button>
+        </div>
+      </div>
+      <div id="qHelpContent"
+        style="display:none; padding:15px; background:rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.1); font-size:14px; color:var(--text);">
+        <div id="qHelpText" style="font-weight:800;"></div>
+      </div>
+      <div class="mbd" style="text-align:center;">
+        <div class="bigLetter ltrText" id="levelLetterChar" style="font-size:52px; margin:0 0 6px;">A a</div>
+        <div id="levelInstruction" class="note" style="font-size:17px; margin-bottom:12px; font-weight:800; color:var(--text);">
+        </div>
+        <div id="levelContainer"
+          style="position:relative; width:100%; min-height:300px; margin:0 auto; background:rgba(0,0,0,.3); border-radius:24px; overflow:hidden; border:2px solid var(--accent); display:flex; align-items:center; justify-content:center; flex-direction:column;">
+          <!-- Content injected via JS -->
+        </div>
+        <div class="foundPill" id="levelProgressPill"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="kingdomModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Kingdom">
+      <div class="mhd">
+        <div class="pill" data-t="kingdomTitle">הממלכה שלי: כל החיות שאספת</div>
+        <div class="controls">
+          <button class="btn" id="closeKingdomBtn" data-t="closeBtn" type="button">סגור</button>
+        </div>
+      </div>
+      <div class="mbd">
+        <div class="kingdomGrid" id="kingdomGrid"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="leaderboardModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Leaderboard">
+      <div class="mhd">
+        <div class="pill" data-t="leaderboardTitle">טבלת האלופים 🏆</div>
+        <div class="controls">
+          <button class="btn" id="closeLeaderboardBtn" data-t="closeBtn" type="button">סגור</button>
+        </div>
+      </div>
+      <div class="mbd">
+        <div class="note" data-t="leaderboardNote">כל השחקנים/ות בממלכה וההישגים שלהם:</div>
+        <div id="leaderboardList" style="margin-top:15px; display:grid; gap:10px;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="welcomeModal" aria-hidden="true" style="z-index: 2000;">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Welcome">
+      <div class="mhd">
+        <div class="pill" data-t="welcomeTitle">ברוכים הבאים לממלכת האותיות! 🏰</div>
+        <select id="welcomeLangSelect" class="langSelect" style="padding: 6px 10px; font-size: 12px; width: auto;">
+          <option value="he">🇮🇱</option>
+          <option value="en">🇺🇸</option>
+          <option value="de">🇩🇪</option>
+        </select>
+      </div>
+      <div class="mbd" style="text-align: center;">
+        <div style="font-size: 20px; margin-bottom: 20px; line-height: 1.6;" data-t="welcomeText">
+          בממלכה הזו לומדים את <b>אותיות ה-ABC באנגלית</b> דרך משחק והרפתקאות!<br>לכל אות שלושה שלבים: תמונות, מילים
+          וכתיבה. השלימו שלבים, אספו חיות נדירות וזכו בכתרים. 🏆
+        </div>
+
+        <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 25px;">
+          <div class="stat">
+            <div class="v">🔤</div>
+            <div class="k" data-t="wLearn">למדו אותיות</div>
+          </div>
+          <div class="stat">
+            <div class="v">🦁</div>
+            <div class="k" data-t="wCollect">אספו חיות</div>
+          </div>
+          <div class="stat">
+            <div class="v">⭐</div>
+            <div class="k" data-t="wScore">צברו נקודות</div>
+          </div>
+        </div>
+
+        <button class="btn primary" id="startGameBtn" style="font-size: 20px; padding: 15px 30px; width: 100%;"
+          data-t="startAdv">מתחילים
+          בהרפתקה! 🚀</button>
+
+        <div
+          style="margin-top: 15px; display: flex; align-items: center; justify-content: center; gap: 10px; cursor: pointer;"
+          id="dontShowWelcomeRow">
+          <div
+            style="width: 20px; height: 20px; border: 2px solid var(--muted); border-radius: 4px; display: flex; align-items: center; justify-content: center;"
+            id="dontShowCheckbox"></div>
+          <div class="tiny" style="font-size: 14px;" data-t="dontShow">אל תציג זאת שוב</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modalBack" id="helpModal" aria-hidden="true">
+    <div class="modal" role="dialog" aria-modal="true" aria-label="Help">
+      <div class="mhd">
+        <div class="pill" data-t="helpTitle">מדריך לממלכה 📖</div>
+        <div class="controls">
+          <button class="btn" id="closeHelpBtn" data-t="closeBtn" type="button">סגור</button>
+        </div>
+      </div>
+      <div class="mbd" style="max-height: 70vh; overflow-y: auto;">
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent); margin-bottom:10px;" data-t="helpIntroTitle">איך משחקים?</h3>
+          <p style="line-height:1.6;" data-t="helpIntroText">בממלכה הזו לומדים את אותיות ה-ABC! לוחצים על אות בלוח,
+            ולכל אות שלושה שלבים.</p>
+        </div>
+        <div style="margin-bottom:20px;">
+          <h3 style="color:var(--accent); margin-bottom:10px;" data-t="helpPointsTitle">שיטת הנקודות</h3>
+          <p style="line-height:1.6;" data-t="helpPointsText">• שלב 1 = 10 נקודות. • שלב 2 = 20 נקודות. • שלב 3 = עד
+            30 נקודות.</p>
+        </div>
+        <div>
+          <h3 style="color:var(--accent); margin-bottom:10px;" data-t="helpPrestigeTitle">כתרים ומלכות</h3>
+          <p style="line-height:1.6;" data-t="helpPrestigeText">כשמשלימים לפחות שלב אחד בכל 26 האותיות, זוכים בכתר!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="successOverlay">
+    <div class="successTitle" data-t="successTitle">⭐ מעולה! ⭐</div>
+    <div class="successExpr ltrText" id="successOverlayExpr">A</div>
+    <div class="successPoints" id="successOverlayPoints">+10 נקודות</div>
+    <div id="successAnimal" style="margin-top:10px; text-align:center; display:none;">
+      <div style="font-size:70px;" id="successAnimalEmoji"></div>
+      <div style="font-size:20px; font-weight:1000;" id="successAnimalName"></div>
+    </div>
+    <div id="prestigeSection" style="display:none; margin-top:20px; text-align:center; animation: fadeIn 0.8s ease;">
+      <h3 data-t="prestigeTitle">הישג ענק! 👑</h3>
+      <p class="note" data-t="prestigeDesc" style="font-size:16px;">סיימתם את כל האלף-בית! רוצים להתחיל הרפתקה חדשה
+        ולקבל כתר?</p>
+      <div style="display:flex; gap:12px; justify-content:center; margin-top:10px;">
+        <button class="btn primary" id="prestigeBtn" data-t="prestigeBtn"
+          style="font-size:18px; padding:12px 24px;">התחל הרפתקה חדשה</button>
+        <button class="btn" id="keepPlayingBtn" data-t="keepPlayingBtn"
+          style="font-size:18px; padding:12px 24px;">ממשיכים לשחק</button>
+      </div>
+    </div>
+  </div>
+
+  <footer
+    style="text-align:center; padding: 20px 0; color: rgba(255,255,255,0.3); font-weight: 900; letter-spacing: 2px; font-size: 14px;">
+    <div>A KONAMI APP</div>
+    <a href="https://buymeacoffee.com/leokonami" target="_blank"
+      style="display:inline-flex; align-items:center; gap:6px; margin-top:8px; text-decoration:none; color:rgba(255,209,102,0.6); font-size:12px; transition:opacity 0.2s;">
+      <span style="font-size:16px;">☕</span> Buy me a coffee
+    </a>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+  <script>
+    (function () {
+      const STORAGE_KEY = "abc_kingdom_v1";
+      const ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
+      const LEVEL_POINTS = { 1: 10, 2: 20, 3: 30 };
+      const POINTS_PER_WORD = 6; // Level 3
+      const PICK_TARGETS = 5;    // Levels 1-2 target count (capped by pool size)
+      const PICK_TILES = 12;     // Total tiles shown in Levels 1-2
+
+      const els = {
+        grid: document.getElementById("grid"),
+        resetProfileBtn: document.getElementById("resetProfileBtn"),
+        progressCount: document.getElementById("progressCount"),
+        totalPoints: document.getElementById("totalPoints"),
+        collection: document.getElementById("collection"),
+        animalsCount: document.getElementById("animalsCount"),
+
+        activeProfileName: document.getElementById("activeProfileName"),
+        profilesBtn: document.getElementById("profilesBtn"),
+        modalBack: document.getElementById("modalBack"),
+        closeModalBtn: document.getElementById("closeModalBtn"),
+        profilesList: document.getElementById("profilesList"),
+        newProfileName: document.getElementById("newProfileName"),
+        newProfileAvatar: document.getElementById("newProfileAvatar"),
+        createProfileBtn: document.getElementById("createProfileBtn"),
+
+        toggleSoundBtn: document.getElementById("toggleSoundBtn"),
+        openKingdomBtn: document.getElementById("openKingdomBtn"),
+        kingdomModal: document.getElementById("kingdomModal"),
+        kingdomGrid: document.getElementById("kingdomGrid"),
+        closeKingdomBtn: document.getElementById("closeKingdomBtn"),
+
+        letterModal: document.getElementById("letterModal"),
+        letterModalPill: document.getElementById("letterModalPill"),
+        letterModalChar: document.getElementById("letterModalChar"),
+        levelsList: document.getElementById("levelsList"),
+        closeLetterBtn: document.getElementById("closeLetterBtn"),
+
+        levelModal: document.getElementById("levelModal"),
+        levelTitle: document.getElementById("levelTitle"),
+        levelLetterChar: document.getElementById("levelLetterChar"),
+        levelInstruction: document.getElementById("levelInstruction"),
+        levelContainer: document.getElementById("levelContainer"),
+        levelProgressPill: document.getElementById("levelProgressPill"),
+        closeLevelBtn: document.getElementById("closeLevelBtn"),
+
+        leaderboardBtn: document.getElementById("leaderboardBtn"),
+        leaderboardModal: document.getElementById("leaderboardModal"),
+        leaderboardList: document.getElementById("leaderboardList"),
+        closeLeaderboardBtn: document.getElementById("closeLeaderboardBtn"),
+
+        helpBtn: document.getElementById("helpBtn"),
+        helpModal: document.getElementById("helpModal"),
+        closeHelpBtn: document.getElementById("closeHelpBtn"),
+        qHelpBtn: document.getElementById("qHelpBtn"),
+        qHelpContent: document.getElementById("qHelpContent"),
+        qHelpText: document.getElementById("qHelpText"),
+
+        welcomeModal: document.getElementById("welcomeModal"),
+        startGameBtn: document.getElementById("startGameBtn"),
+        dontShowWelcomeRow: document.getElementById("dontShowWelcomeRow"),
+        dontShowCheckbox: document.getElementById("dontShowCheckbox"),
+
+        successOverlay: document.getElementById("successOverlay"),
+        successOverlayExpr: document.getElementById("successOverlayExpr"),
+        successOverlayPoints: document.getElementById("successOverlayPoints"),
+        successAnimal: document.getElementById("successAnimal"),
+        successAnimalEmoji: document.getElementById("successAnimalEmoji"),
+        successAnimalName: document.getElementById("successAnimalName"),
+        crownsCount: document.getElementById("crownsCount"),
+        crownsStat: document.getElementById("crownsStat"),
+        prestigeSection: document.getElementById("prestigeSection"),
+        prestigeBtn: document.getElementById("prestigeBtn"),
+        keepPlayingBtn: document.getElementById("keepPlayingBtn"),
+
+        langSelect: document.getElementById("langSelect"),
+        welcomeLangSelect: document.getElementById("welcomeLangSelect"),
+      };
+
+      const animalPool = [
+        { emoji: "🦊", id: "fox" },
+        { emoji: "🐺", id: "wolf" },
+        { emoji: "🦁", id: "lion" },
+        { emoji: "🐯", id: "tiger" },
+        { emoji: "🐻", id: "bear" },
+        { emoji: "🦉", id: "owl" },
+        { emoji: "🐲", id: "dragon" },
+        { emoji: "🦄", id: "unicorn" },
+        { emoji: "🐬", id: "dolphin" },
+        { emoji: "🐴", id: "horse" },
+        { emoji: "🦒", id: "giraffe" },
+        { emoji: "🐼", id: "panda" },
+        { emoji: "🦓", id: "zebra" },
+        { emoji: "🦝", id: "raccoon" },
+        { emoji: "🦔", id: "hedgehog" },
+        { emoji: "🐰", id: "rabbit" },
+        { emoji: "🦦", id: "otter" },
+        { emoji: "🐸", id: "frog" },
+        { emoji: "🦜", id: "parrot" },
+        { emoji: "🦋", id: "butterfly" },
+        { emoji: "🐨", id: "koala" },
+        { emoji: "🦅", id: "eagle" },
+        { emoji: "🦢", id: "swan" },
+        { emoji: "🦚", id: "peacock" },
+        { emoji: "🦩", id: "flamingo" },
+        { emoji: "🐢", id: "turtle" },
+        { emoji: "🐙", id: "octopus" },
+        { emoji: "🦀", id: "crab" },
+        { emoji: "🐋", id: "whale" },
+        { emoji: "🦈", id: "shark" },
+        { emoji: "🐆", id: "leopard" },
+        { emoji: "🦌", id: "deer" },
+        { emoji: "🐘", id: "elephant" },
+        { emoji: "🦏", id: "rhino" },
+        { emoji: "🦛", id: "hippo" },
+        { emoji: "🐪", id: "camel" },
+        { emoji: "🦘", id: "kangaroo" },
+        { emoji: "🦥", id: "sloth" },
+        { emoji: "🐧", id: "penguin" },
+        { emoji: "🦭", id: "seal" },
+        { emoji: "🦫", id: "beaver" },
+        { emoji: "🐿️", id: "squirrel" },
+        { emoji: "🦇", id: "bat" },
+        { emoji: "🐝", id: "bee" },
+      ];
+
+      const state = {
+        activeProfileId: null,
+        profiles: {},
+        soundEnabled: true,
+        lang: "he",
+        currentLetter: null,
+        currentLevel: null,
+      };
+
+      // ---------- Utils ----------
+
+      function now() { return Date.now(); }
+      function pick(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+      function shuffle(arr) {
+        const a = arr.slice();
+        for (let i = a.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [a[i], a[j]] = [a[j], a[i]];
+        }
+        return a;
+      }
+      // "X-ray" / "ice cream" -> "xray" / "icecream" so typing is forgiving
+      function normWord(s) { return String(s).toLowerCase().replace(/[^a-z0-9]/g, ""); }
+
+      function escapeHtml(s) {
+        return String(s).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+      }
+
+      function t(key, params = {}) {
+        const lang = state.lang || "he";
+        let str = (translations[lang] && translations[lang][key]) || key;
+        for (const k in params) {
+          str = str.replaceAll(`{${k}}`, params[k]);
+        }
+        return str;
+      }
+
+      // ---------- Audio ----------
+
+      let audioCtx = null;
+      function initAudio() {
+        if (audioCtx) return;
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+
+      function playSound(type) {
+        if (!state.soundEnabled) return;
+        initAudio();
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+        const nowTime = audioCtx.currentTime;
+
+        if (type === "success") {
+          osc.type = "sine";
+          osc.frequency.setValueAtTime(523.25, nowTime);
+          osc.frequency.exponentialRampToValueAtTime(880, nowTime + 0.1);
+          gain.gain.setValueAtTime(0, nowTime);
+          gain.gain.linearRampToValueAtTime(0.2, nowTime + 0.05);
+          gain.gain.linearRampToValueAtTime(0, nowTime + 0.3);
+          osc.start();
+          osc.stop(nowTime + 0.3);
+        } else if (type === "error") {
+          osc.type = "sawtooth";
+          osc.frequency.setValueAtTime(150, nowTime);
+          osc.frequency.linearRampToValueAtTime(50, nowTime + 0.2);
+          gain.gain.setValueAtTime(0.2, nowTime);
+          gain.gain.linearRampToValueAtTime(0, nowTime + 0.2);
+          osc.start();
+          osc.stop(nowTime + 0.2);
+        }
+      }
+
+      function triggerConfetti() {
+        if (typeof confetti === "function") {
+          confetti({
+            particleCount: 100,
+            spread: 70,
+            origin: { y: 0.6 },
+            colors: ["#2bd576", "#ffd166", "#e8ecff"]
+          });
+        }
+      }
+
+      // ---------- Profiles & persistence ----------
+
+      function defaultProfile(name, avatar) {
+        return {
+          id: "p_" + Math.random().toString(16).slice(2) + "_" + now(),
+          name: (name || "אורח/ת").trim().slice(0, 20),
+          avatar: avatar || "🦊",
+          createdAt: now(),
+          stats: { points: 0 },
+          letters: {},   // { A: { l1: true, l2: false, l3: false } }
+          animals: [],   // { emoji, id, key: "A:l1" }
+          crowns: 0
+        };
+      }
+
+      function getActiveProfile() {
+        if (!state.activeProfileId) return null;
+        return state.profiles[state.activeProfileId] || null;
+      }
+
+      function save() {
+        const toSave = {
+          activeProfileId: state.activeProfileId,
+          profiles: state.profiles,
+          soundEnabled: state.soundEnabled,
+          lang: state.lang
+        };
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+      }
+
+      function load() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return;
+          const saved = JSON.parse(raw);
+          if (saved && typeof saved === "object") {
+            state.activeProfileId = saved.activeProfileId || null;
+            state.profiles = saved.profiles && typeof saved.profiles === "object" ? saved.profiles : {};
+            if (typeof saved.soundEnabled === "boolean") {
+              state.soundEnabled = saved.soundEnabled;
+            }
+            if (saved.lang) state.lang = saved.lang;
+          }
+        } catch (e) { }
+      }
+
+      function ensureAtLeastOneProfile() {
+        if (Object.keys(state.profiles).length > 0) return;
+        const p = defaultProfile(t('player') + " 1", "🦊");
+        state.profiles[p.id] = p;
+        state.activeProfileId = p.id;
+        save();
+      }
+
+      // ---------- Progress helpers ----------
+
+      function letterState(p, letter) {
+        return (p && p.letters && p.letters[letter]) || {};
+      }
+
+      function levelDone(p, letter, n) {
+        return !!letterState(p, letter)["l" + n];
+      }
+
+      function letterCompleted(p, letter) {
+        const ls = letterState(p, letter);
+        return !!(ls.l1 || ls.l2 || ls.l3);
+      }
+
+      function lettersCompletedCount(p) {
+        if (!p) return 0;
+        return ALPHABET.filter(L => letterCompleted(p, L)).length;
+      }
+
+      function getNextAnimalFor(key) {
+        const p = getActiveProfile();
+        if (!p) return { ...animalPool[0], key };
+        const owned = new Set(p.animals.map(a => a.emoji));
+        let next = animalPool.find(a => !owned.has(a.emoji));
+        if (!next) next = pick(animalPool);
+        return { ...next, key };
+      }
+
+      function getAnimalName(animal) {
+        if (!animal) return "";
+        if (animal.id) return t("animal_" + animal.id);
+        return animal.name || "";
+      }
+
+      // ---------- Language ----------
+
+      function setLanguage(lang) {
+        if (!translations[lang]) return;
+        state.lang = lang;
+        save();
+
+        document.documentElement.lang = lang;
+        document.documentElement.dir = translations[lang].dir;
+        document.title = translations[lang].title;
+
+        gtag('event', 'change_language', { language: lang });
+
+        document.querySelectorAll("[data-t]").forEach(el => {
+          const key = el.getAttribute("data-t");
+          if (translations[lang][key]) el.innerHTML = translations[lang][key];
+        });
+
+        document.querySelectorAll("[data-t-placeholder]").forEach(el => {
+          const key = el.getAttribute("data-t-placeholder");
+          if (translations[lang][key]) el.placeholder = translations[lang][key];
+        });
+
+        if (els.langSelect) els.langSelect.value = lang;
+        if (els.welcomeLangSelect) els.welcomeLangSelect.value = lang;
+
+        buildGrid();
+        updateUI();
+      }
+
+      // ---------- Modals ----------
+
+      function closeModalWithAnimation(modalEl, onComplete) {
+        if (!modalEl) return;
+        modalEl.classList.add("closing");
+        const modalContent = modalEl.querySelector(".modal");
+        if (modalContent) modalContent.classList.add("closing");
+
+        setTimeout(() => {
+          modalEl.style.display = "none";
+          modalEl.classList.remove("closing");
+          if (modalContent) modalContent.classList.remove("closing");
+          modalEl.setAttribute("aria-hidden", "true");
+          if (onComplete) onComplete();
+        }, 300);
+      }
+
+      // ---------- Letter grid ----------
+
+      function buildGrid() {
+        const p = getActiveProfile();
+        els.grid.innerHTML = "";
+
+        for (const L of ALPHABET) {
+          const ls = letterState(p, L);
+          const doneCount = (ls.l1 ? 1 : 0) + (ls.l2 ? 1 : 0) + (ls.l3 ? 1 : 0);
+
+          const d = document.createElement("div");
+          d.className = "cell work letterCell" + (doneCount > 0 ? " done" : "");
+          d.innerHTML = `
+            <div class="lchar">${L} ${L.toLowerCase()}</div>
+            <div class="lstars">${"★".repeat(doneCount)}${"☆".repeat(3 - doneCount)}</div>
+          `;
+          d.title = L;
+          d.onclick = () => {
+            initAudio();
+            openLetterModal(L);
+          };
+          els.grid.appendChild(d);
+        }
+      }
+
+      // ---------- Letter modal ----------
+
+      function openLetterModal(letter) {
+        state.currentLetter = letter;
+        renderLetterModal(letter);
+        els.letterModal.style.display = "flex";
+        els.letterModal.setAttribute("aria-hidden", "false");
+        gtag('event', 'select_content', { content_type: "letter", item_id: letter });
+      }
+
+      function closeLetterModal() {
+        closeModalWithAnimation(els.letterModal);
+      }
+
+      function renderLetterModal(letter) {
+        const p = getActiveProfile();
+        els.letterModalPill.textContent = letter;
+        els.letterModalChar.textContent = `${letter} ${letter.toLowerCase()}`;
+        els.levelsList.innerHTML = "";
+
+        for (let n = 1; n <= 3; n++) {
+          const isDone = levelDone(p, letter, n);
+          const isLocked = n > 1 && !levelDone(p, letter, n - 1);
+
+          const row = document.createElement("div");
+          row.className = "levelRow" + (isDone ? " done" : "") + (isLocked ? " locked" : "");
+
+          const ptsText = n === 3 ? t('levelPtsUpTo', { n: LEVEL_POINTS[n] }) : t('levelPts', { n: LEVEL_POINTS[n] });
+          const statusIcon = isDone ? "✅" : (isLocked ? "🔒" : "▶️");
+          const titleKey = "level" + n + "Title";
+
+          row.innerHTML = `
+            <div>
+              <div class="lvName">${statusIcon} ${t('levelLabel', { n })} - ${t(titleKey)}</div>
+              <div class="lvPts">${ptsText}${isDone ? " · " + t('doneLabel') + " ✓" : ""}</div>
+            </div>
+            <button class="btn ${isDone ? "" : "primary"}" type="button" ${isLocked ? "disabled" : ""}>
+              ${isDone ? t('replayLabel') : (isLocked ? t('lockedLabel') : t('playLabel'))}
+            </button>
+          `;
+
+          if (!isLocked) {
+            row.querySelector("button").addEventListener("click", () => startLevel(letter, n));
+          }
+          els.levelsList.appendChild(row);
+        }
+      }
+
+      // ---------- Levels ----------
+
+      function startLevel(letter, n) {
+        state.currentLevel = n;
+        els.levelTitle.textContent = `${t('levelLabel', { n })} - ${t('level' + n + 'Title')}`;
+        els.levelLetterChar.textContent = `${letter} ${letter.toLowerCase()}`;
+        els.qHelpText.textContent = t('help_level' + n);
+        els.qHelpContent.style.display = "none";
+        els.levelContainer.innerHTML = "";
+        els.levelProgressPill.textContent = "";
+
+        closeModalWithAnimation(els.letterModal, () => {
+          els.levelModal.style.display = "flex";
+          els.levelModal.setAttribute("aria-hidden", "false");
+        });
+
+        gtag('event', 'level_start', { level_name: `${letter}_l${n}` });
+
+        if (n === 1) runPickLevel(letter, "items");
+        else if (n === 2) runPickLevel(letter, "words");
+        else runTypeLevel(letter);
+      }
+
+      // Levels 1 & 2: click all tiles that start with the letter.
+      // field = "items" (emoji tiles) or "words" (text tiles).
+      function runPickLevel(letter, field) {
+        const data = LETTERS_DATA[letter];
+        const isEmoji = field === "items";
+
+        const pool = isEmoji ? data.items : data.words.map(w => ({ w }));
+        const targets = shuffle(pool).slice(0, Math.min(PICK_TARGETS, pool.length));
+
+        // Distractors come from other letters; defensively drop anything that
+        // happens to start with the target letter.
+        const distractorPool = [];
+        for (const other of ALPHABET) {
+          if (other === letter) continue;
+          const src = isEmoji ? LETTERS_DATA[other].items : LETTERS_DATA[other].words.map(w => ({ w }));
+          for (const item of src) {
+            if (item.w[0].toUpperCase() !== letter) distractorPool.push(item);
+          }
+        }
+        const distractors = shuffle(distractorPool).slice(0, PICK_TILES - targets.length);
+
+        const tiles = shuffle([
+          ...targets.map(item => ({ ...item, correct: true })),
+          ...distractors.map(item => ({ ...item, correct: false })),
+        ]);
+
+        const total = targets.length;
+        let found = 0;
+
+        els.levelInstruction.textContent = t(isEmoji ? 'level1Instr' : 'level2Instr', { letter, total });
+        els.levelProgressPill.textContent = t('foundCount', { found, total });
+
+        const grid = document.createElement("div");
+        grid.className = "pickGrid";
+        els.levelContainer.appendChild(grid);
+
+        for (const tile of tiles) {
+          const d = document.createElement("div");
+          if (isEmoji) {
+            d.className = "pickTile";
+            d.innerHTML = `<div class="pEmoji">${tile.e}</div><div class="pWord ltrText"></div>`;
+          } else {
+            d.className = "pickTile wordTile ltrText";
+            d.textContent = tile.w;
+          }
+
+          d.onclick = () => {
+            if (tile.correct) {
+              playSound("success");
+              d.classList.add("correct");
+              if (isEmoji) d.querySelector(".pWord").textContent = tile.w;
+              found++;
+              els.levelProgressPill.textContent = t('foundCount', { found, total });
+              if (found >= total) {
+                completeLevel(letter, state.currentLevel, LEVEL_POINTS[state.currentLevel]);
+              }
+            } else {
+              playSound("error");
+              d.classList.add("wrong");
+              setTimeout(() => d.classList.remove("wrong"), 450);
+            }
+          };
+          grid.appendChild(d);
+        }
+      }
+
+      // Level 3: copy each of 5 words shown on screen.
+      function runTypeLevel(letter) {
+        const data = LETTERS_DATA[letter];
+        const words = shuffle(data.items).slice(0, Math.min(PICK_TARGETS, data.items.length));
+        const total = words.length;
+        let idx = 0;
+
+        els.levelInstruction.textContent = t('level3Instr', { letter });
+
+        const box = document.createElement("div");
+        box.className = "typeBox";
+        box.innerHTML = `
+          <div class="typeEmoji" id="typeEmoji"></div>
+          <div class="typeWordDisplay ltrText" id="typeWord"></div>
+          <input type="text" id="typeInput" class="textInput typeInput ltrText" autocomplete="off"
+            autocapitalize="off" spellcheck="false" placeholder="${escapeHtml(t('typePlaceholder'))}" />
+          <button class="btn primary" id="typeCheckBtn" type="button" style="font-size:17px; padding:12px 28px;">
+            ${escapeHtml(t('checkBtn'))}
+          </button>
+        `;
+        els.levelContainer.appendChild(box);
+
+        const emojiEl = box.querySelector("#typeEmoji");
+        const wordEl = box.querySelector("#typeWord");
+        const input = box.querySelector("#typeInput");
+        const checkBtn = box.querySelector("#typeCheckBtn");
+
+        const showWord = () => {
+          emojiEl.textContent = words[idx].e;
+          wordEl.textContent = words[idx].w;
+          input.value = "";
+          els.levelProgressPill.textContent = t('typeProgress', { i: idx + 1, n: total });
+          input.focus();
+        };
+
+        const check = () => {
+          if (normWord(input.value) === normWord(words[idx].w)) {
+            playSound("success");
+            idx++;
+            if (idx >= total) {
+              completeLevel(letter, 3, total * POINTS_PER_WORD);
+            } else {
+              showWord();
+            }
+          } else {
+            playSound("error");
+            input.classList.add("wrong");
+            setTimeout(() => input.classList.remove("wrong"), 450);
+          }
+        };
+
+        checkBtn.addEventListener("click", check);
+        input.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") check();
+        });
+
+        showWord();
+      }
+
+      // ---------- Level completion & rewards ----------
+
+      function completeLevel(letter, n, pointsForLevel) {
+        const p = getActiveProfile();
+        if (!p) return;
+
+        const ls = p.letters[letter] = p.letters[letter] || {};
+        const firstTime = !ls["l" + n];
+        let earned = 0;
+        let animal = null;
+
+        if (firstTime) {
+          ls["l" + n] = true;
+          earned = pointsForLevel;
+          p.stats.points = (p.stats.points || 0) + earned;
+          animal = getNextAnimalFor(`${letter}:l${n}`);
+          p.animals.push(animal);
+          gtag('event', 'level_end', { level_name: `${letter}_l${n}`, success: true });
+          gtag('event', 'earn_virtual_currency', { value: earned, virtual_currency_name: "points" });
+          gtag('event', 'unlock_animal', { item_id: animal.emoji, item_name: getAnimalName(animal) });
+        }
+
+        save();
+        showSuccessOverlay(letter, n, earned, animal, firstTime);
+
+        setTimeout(() => {
+          closeModalWithAnimation(els.levelModal, () => {
+            buildGrid();
+            updateUI();
+            openLetterModal(letter);
+            if (firstTime && lettersCompletedCount(p) === ALPHABET.length) {
+              setTimeout(showCrownCeremony, 600);
+            }
+          });
+        }, 2400);
+      }
+
+      function showSuccessOverlay(letter, n, points, animal, firstTime) {
+        els.prestigeSection.style.display = "none";
+        els.successOverlayExpr.textContent = `${letter} · ${t('levelLabel', { n })}`;
+
+        if (firstTime) {
+          els.successOverlayPoints.textContent = t('successPoints', { n: points });
+        } else {
+          els.successOverlayPoints.textContent = t('practiceMsg');
+        }
+
+        if (animal) {
+          els.successAnimal.style.display = "block";
+          els.successAnimalEmoji.textContent = animal.emoji;
+          els.successAnimalName.textContent = getAnimalName(animal);
+        } else {
+          els.successAnimal.style.display = "none";
+        }
+
+        els.successOverlay.style.display = "flex";
+        triggerConfetti();
+        setTimeout(() => {
+          els.successOverlay.style.display = "none";
+        }, 2200);
+      }
+
+      // ---------- Crown / prestige ----------
+
+      function showCrownCeremony() {
+        els.successAnimal.style.display = "none";
+        els.successOverlayExpr.textContent = t("allDone");
+        els.successOverlayPoints.textContent = t("crownEarned");
+        els.prestigeSection.style.display = "block";
+        els.successOverlay.style.display = "flex";
+        triggerConfetti();
+      }
+
+      function startNewAdventure() {
+        const p = getActiveProfile();
+        if (!p) return;
+
+        p.crowns = (p.crowns || 0) + 1;
+        p.letters = {};
+        p.animals = [];
+
+        gtag('event', 'prestige', { crowns_count: p.crowns });
+
+        els.prestigeSection.style.display = "none";
+        els.successOverlay.style.display = "none";
+
+        save();
+        buildGrid();
+        updateUI();
+      }
+
+      function dismissCrownCeremony() {
+        els.prestigeSection.style.display = "none";
+        els.successOverlay.style.display = "none";
+      }
+
+      // ---------- Collection & kingdom ----------
+
+      function renderCollection() {
+        const p = getActiveProfile();
+        els.collection.innerHTML = "";
+        if (!p) return;
+
+        const list = p.animals.slice(-8).reverse();
+        if (list.length === 0) {
+          const d = document.createElement("div");
+          d.className = "note";
+          d.textContent = t('noAnimals');
+          els.collection.appendChild(d);
+          return;
+        }
+
+        for (const a of list) {
+          const b = document.createElement("div");
+          b.className = "badge";
+          b.innerHTML = `<div style="font-size:18px;">${a.emoji}</div><div>${getAnimalName(a)}</div>`;
+          els.collection.appendChild(b);
+        }
+      }
+
+      function openKingdomModal() {
+        initAudio();
+        els.kingdomModal.style.display = "flex";
+        els.kingdomModal.setAttribute("aria-hidden", "false");
+        gtag('event', 'view_item_list', { item_list_name: "Kingdom" });
+        renderKingdomModal();
+      }
+
+      function closeKingdomModal() {
+        closeModalWithAnimation(els.kingdomModal);
+      }
+
+      // Animal keys look like "A:l2" -> caption "A · Level 2"
+      function animalFact(a) {
+        if (!a.key || a.key.indexOf(":l") === -1) return "";
+        const [letter, lvl] = a.key.split(":l");
+        return `${letter} · ${t('levelLabel', { n: lvl })}`;
+      }
+
+      function renderKingdomModal() {
+        const p = getActiveProfile();
+        els.kingdomGrid.innerHTML = "";
+        if (!p) return;
+
+        if (p.animals.length === 0) {
+          els.kingdomGrid.innerHTML = `<div class='note'>${t('kingdomEmpty')}</div>`;
+          return;
+        }
+
+        for (const a of p.animals) {
+          const d = document.createElement("div");
+          d.className = "kCell";
+          d.innerHTML = `
+            <div class="kEmoji">${a.emoji}</div>
+            <div class="kName">${getAnimalName(a)}</div>
+            <div class="kFact ltrText">${animalFact(a)}</div>
+          `;
+          els.kingdomGrid.appendChild(d);
+        }
+      }
+
+      // ---------- UI ----------
+
+      function updateUI() {
+        const p = getActiveProfile();
+
+        els.activeProfileName.textContent = p ? (p.avatar + " " + p.name) : "-";
+        els.progressCount.textContent = `${lettersCompletedCount(p)}/${ALPHABET.length}`;
+        els.totalPoints.textContent = p ? String(p.stats.points || 0) : "0";
+        els.animalsCount.textContent = p ? String(p.animals.length) : "0";
+        if (p && p.crowns > 0) {
+          els.crownsStat.style.display = "flex";
+          els.crownsCount.textContent = String(p.crowns);
+        } else {
+          els.crownsStat.style.display = "none";
+        }
+
+        els.toggleSoundBtn.textContent = state.soundEnabled ? "🔊" : "🔇";
+
+        renderCollection();
+      }
+
+      // ---------- Profiles UI ----------
+
+      function openProfilesModal() {
+        els.modalBack.style.display = "flex";
+        els.modalBack.setAttribute("aria-hidden", "false");
+        renderProfilesModal();
+      }
+
+      function closeProfilesModal() {
+        closeModalWithAnimation(els.modalBack);
+      }
+
+      function renderProfilesModal() {
+        els.profilesList.innerHTML = "";
+
+        const ids = Object.keys(state.profiles).sort((a, b) => {
+          return (state.profiles[b].createdAt || 0) - (state.profiles[a].createdAt || 0);
+        });
+
+        for (const id of ids) {
+          const p = state.profiles[id];
+          const completed = lettersCompletedCount(p);
+
+          const card = document.createElement("div");
+          card.className = "profileCard";
+          card.innerHTML = `
+            <div class="pLeft">
+              <div class="avatar">${p.avatar || "🦊"}</div>
+              <div>
+                <div class="pName">${escapeHtml(p.name || t('player'))}</div>
+                <div class="pMeta">${completed}/26 ${t('lettersLabel')}, ${p.stats?.points || 0} ${t('scorePoints')}, ${p.animals?.length || 0} ${t('scoreAnimals')}</div>
+              </div>
+            </div>
+            <div class="pActions">
+              <button class="btn" data-action="select" data-id="${id}" type="button">${t('select')}</button>
+              <button class="btn danger" data-action="delete" data-id="${id}" type="button">${t('delete')}</button>
+            </div>
+          `;
+          els.profilesList.appendChild(card);
+        }
+
+        els.profilesList.querySelectorAll("button[data-action]").forEach(btn => {
+          btn.addEventListener("click", (e) => {
+            const action = e.currentTarget.dataset.action;
+            const id = e.currentTarget.dataset.id;
+
+            if (action === "select") {
+              state.activeProfileId = id;
+              save();
+              closeProfilesModal();
+              buildGrid();
+              updateUI();
+            }
+
+            if (action === "delete") {
+              const p = state.profiles[id];
+              if (!p) return;
+              const ok = confirm(t('confirmDelete', { name: p.name }));
+              if (!ok) return;
+
+              delete state.profiles[id];
+              if (state.activeProfileId === id) {
+                state.activeProfileId = Object.keys(state.profiles)[0] || null;
+              }
+              ensureAtLeastOneProfile();
+              save();
+              renderProfilesModal();
+              buildGrid();
+              updateUI();
+            }
+          });
+        });
+      }
+
+      function createProfile() {
+        const name = (els.newProfileName.value || "").trim();
+        const avatar = els.newProfileAvatar.value || "🦊";
+
+        if (!name) {
+          alert(t('profileNameRequired'));
+          return;
+        }
+
+        const p = defaultProfile(name, avatar);
+        state.profiles[p.id] = p;
+        state.activeProfileId = p.id;
+
+        gtag('event', 'sign_up', { method: "profile_creation" });
+
+        els.newProfileName.value = "";
+        save();
+
+        renderProfilesModal();
+        closeProfilesModal();
+
+        buildGrid();
+        updateUI();
+      }
+
+      function resetActiveProfile() {
+        const p = getActiveProfile();
+        if (!p) return;
+        const ok = confirm(t('confirmReset'));
+        if (!ok) return;
+
+        p.letters = {};
+        p.animals = [];
+        p.stats = { points: 0 };
+
+        save();
+        buildGrid();
+        updateUI();
+      }
+
+      // ---------- Leaderboard ----------
+
+      function openLeaderboard() {
+        els.leaderboardModal.style.display = "flex";
+        renderLeaderboard();
+      }
+
+      function closeLeaderboard() {
+        closeModalWithAnimation(els.leaderboardModal);
+      }
+
+      function renderLeaderboard() {
+        const sorted = Object.values(state.profiles).sort((a, b) => (b.stats.points || 0) - (a.stats.points || 0));
+        els.leaderboardList.innerHTML = "";
+        sorted.forEach((p, i) => {
+          const d = document.createElement("div");
+          d.className = "profileCard";
+          d.style.cursor = "default";
+          d.innerHTML = `
+            <div class="pLeft">
+              <div style="font-size:20px; font-weight:900; width:30px; color:var(--accent); text-align:center;">${i + 1}</div>
+              <div class="avatar">${p.avatar}</div>
+              <div>
+                <div class="pName">${escapeHtml(p.name)}${p.crowns > 0 ? " " + "👑".repeat(Math.min(p.crowns, 5)) : ""}</div>
+                <div class="pMeta">${p.animals.length} ${t('scoreAnimals')} | ${lettersCompletedCount(p)}/26 ${t('lettersLabel')}</div>
+              </div>
+            </div>
+            <div style="font-size:22px; font-weight:1000; color:var(--good);">${p.stats.points || 0} ${t('pointsShort')}</div>
+          `;
+          els.leaderboardList.appendChild(d);
+        });
+      }
+
+      // ---------- Welcome & help ----------
+
+      let dontShowWelcomeState = false;
+
+      function showWelcome() {
+        const skip = localStorage.getItem(STORAGE_KEY + "_skipWelcome");
+        if (skip === "true") {
+          openProfilesModal();
+          return;
+        }
+        els.welcomeModal.style.display = "flex";
+        els.welcomeModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeWelcome() {
+        closeModalWithAnimation(els.welcomeModal, () => {
+          if (dontShowWelcomeState) {
+            localStorage.setItem(STORAGE_KEY + "_skipWelcome", "true");
+          }
+          openProfilesModal();
+        });
+      }
+
+      function toggleDontShowWelcome() {
+        dontShowWelcomeState = !dontShowWelcomeState;
+        if (dontShowWelcomeState) {
+          els.dontShowCheckbox.style.background = "var(--good)";
+          els.dontShowCheckbox.innerText = "✓";
+        } else {
+          els.dontShowCheckbox.style.background = "transparent";
+          els.dontShowCheckbox.innerText = "";
+        }
+      }
+
+      function toggleQHelp() {
+        const isHidden = els.qHelpContent.style.display === "none";
+        els.qHelpContent.style.display = isHidden ? "block" : "none";
+      }
+
+      function openHelpModal() {
+        els.helpModal.style.display = "flex";
+        els.helpModal.setAttribute("aria-hidden", "false");
+      }
+
+      function closeHelpModal() {
+        closeModalWithAnimation(els.helpModal);
+      }
+
+      function toggleSound() {
+        state.soundEnabled = !state.soundEnabled;
+        updateUI();
+        save();
+      }
+
+      // ---------- Wiring ----------
+
+      function wire() {
+        els.resetProfileBtn.addEventListener("click", resetActiveProfile);
+
+        els.profilesBtn.addEventListener("click", openProfilesModal);
+        els.closeModalBtn.addEventListener("click", closeProfilesModal);
+        els.modalBack.addEventListener("click", (e) => {
+          if (e.target === els.modalBack) closeProfilesModal();
+        });
+
+        els.toggleSoundBtn.addEventListener("click", toggleSound);
+        els.openKingdomBtn.addEventListener("click", openKingdomModal);
+        els.closeKingdomBtn.addEventListener("click", closeKingdomModal);
+        els.kingdomModal.addEventListener("click", (e) => {
+          if (e.target === els.kingdomModal) closeKingdomModal();
+        });
+
+        els.leaderboardBtn.addEventListener("click", openLeaderboard);
+        els.closeLeaderboardBtn.addEventListener("click", closeLeaderboard);
+        els.leaderboardModal.addEventListener("click", (e) => {
+          if (e.target === els.leaderboardModal) closeLeaderboard();
+        });
+
+        els.createProfileBtn.addEventListener("click", createProfile);
+        els.newProfileName.addEventListener("keydown", (e) => {
+          if (e.key === "Enter") createProfile();
+        });
+
+        els.closeLetterBtn.addEventListener("click", closeLetterModal);
+        els.letterModal.addEventListener("click", (e) => {
+          if (e.target === els.letterModal) closeLetterModal();
+        });
+
+        els.closeLevelBtn.addEventListener("click", () => {
+          const letter = state.currentLetter;
+          closeModalWithAnimation(els.levelModal, () => {
+            if (letter) openLetterModal(letter);
+          });
+        });
+
+        els.startGameBtn.addEventListener("click", () => {
+          initAudio();
+          closeWelcome();
+        });
+
+        els.helpBtn.addEventListener("click", openHelpModal);
+        els.closeHelpBtn.addEventListener("click", closeHelpModal);
+        els.helpModal.addEventListener("click", (e) => {
+          if (e.target === els.helpModal) closeHelpModal();
+        });
+
+        els.qHelpBtn.addEventListener("click", toggleQHelp);
+
+        els.dontShowWelcomeRow.addEventListener("click", toggleDontShowWelcome);
+        els.prestigeBtn.addEventListener("click", startNewAdventure);
+        els.keepPlayingBtn.addEventListener("click", dismissCrownCeremony);
+
+        const onLangChange = (e) => setLanguage(e.target.value);
+        if (els.langSelect) els.langSelect.addEventListener("change", onLangChange);
+        if (els.welcomeLangSelect) els.welcomeLangSelect.addEventListener("change", onLangChange);
+      }
+
+      // ---------- Init ----------
+
+      function init() {
+        load();
+        ensureAtLeastOneProfile();
+
+        if (!state.activeProfileId || !state.profiles[state.activeProfileId]) {
+          state.activeProfileId = Object.keys(state.profiles)[0] || null;
+        }
+
+        wire();
+        setLanguage(state.lang || "he");
+
+        buildGrid();
+        updateUI();
+
+        showWelcome();
+      }
+
+      init();
+
+      // PWA Service Worker Registration
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW Error:', err));
+        });
+      }
+    })();
+  </script>
+</body>
+
+</html>
