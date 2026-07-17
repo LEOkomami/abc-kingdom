@@ -55,6 +55,10 @@ Pushed to GitHub with the included GitHub Pages workflow (`.github/workflows/sta
 
 All progress is stored in `localStorage` under the key `abc_kingdom_v1` - on this computer only.
 
+## Design & Build Log
+
+See [`docs/DESIGN.md`](docs/DESIGN.md) for the original brief, the decisions behind the game rules, and the verification log from the initial build.
+
 ---
 
 A KONAMI APP ☕ [Buy me a coffee](https://buymeacoffee.com/leokonami)
