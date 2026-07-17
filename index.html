@@ -3,6 +3,29 @@
 
 <head>
   <!-- Google tag (gtag.js) -->
+  <!--
+    ANALYTICS EVENT REFERENCE (Google Analytics 4)
+    To point this at a new GA property: replace G-R72F3FHJ8B in BOTH the script
+    src below and the gtag('config', ...) call. Nothing else needs to change -
+    all game events call gtag('event', ...) and are listed here:
+
+      tutorial_begin      - player clicks "Start Adventure" on the welcome screen
+      sign_up             - { method: "profile_creation" } new profile created
+      select_profile      - { method: "existing_profile" } switched to an existing profile
+      delete_profile      - a profile was deleted
+      reset_progress      - { letters_completed } player reset their progress
+      change_language     - { language } he/en/de switch
+      select_content      - { content_type:"letter", item_id } a letter was opened
+      level_start         - { level_name:"A_l1" } a level began
+      level_end           - { level_name, success, first_time } level completed (fires on replays too)
+      earn_virtual_currency - { value, virtual_currency_name:"points" } first-time clear only
+      unlock_animal       - { item_id (emoji), item_name } first-time clear only
+      unlock_achievement  - { achievement_id:"alphabet_complete", crowns_before } all 26 letters done
+      prestige            - { crowns_count } player restarted for a crown
+      view_item_list      - { item_list_name:"Kingdom" } opened the full animal collection
+      view_help           - opened the how-to-play guide
+      toggle_sound        - { enabled } muted / unmuted
+  -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-R72F3FHJ8B"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
@@ -13,8 +36,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <meta name="theme-color" content="#0b1020">
+  <meta name="mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="icon" href="icon-512.png">
   <link rel="apple-touch-icon" href="icon-512.png">
   <link rel="manifest" href="manifest.json">
   <title>ממלכת האותיות - הרפתקת ABC</title>
@@ -910,10 +935,17 @@
           p.stats.points = (p.stats.points || 0) + earned;
           animal = getNextAnimalFor(`${letter}:l${n}`);
           p.animals.push(animal);
-          gtag('event', 'level_end', { level_name: `${letter}_l${n}`, success: true });
           gtag('event', 'earn_virtual_currency', { value: earned, virtual_currency_name: "points" });
           gtag('event', 'unlock_animal', { item_id: animal.emoji, item_name: getAnimalName(animal) });
         }
+
+        // level_end fires on every completion (replays included) so we can see
+        // engagement; first_time distinguishes a real clear from a practice run.
+        gtag('event', 'level_end', {
+          level_name: `${letter}_l${n}`,
+          success: true,
+          first_time: firstTime
+        });
 
         save();
         showSuccessOverlay(letter, n, earned, animal, firstTime);
@@ -958,6 +990,14 @@
       // ---------- Crown / prestige ----------
 
       function showCrownCeremony() {
+        const p = getActiveProfile();
+        // The moment all 26 letters are complete - distinct from `prestige`,
+        // which is the restart action the player may or may not take next.
+        gtag('event', 'unlock_achievement', {
+          achievement_id: "alphabet_complete",
+          crowns_before: p ? (p.crowns || 0) : 0
+        });
+
         els.successAnimal.style.display = "none";
         els.successOverlayExpr.textContent = t("allDone");
         els.successOverlayPoints.textContent = t("crownEarned");
@@ -1123,6 +1163,7 @@
 
             if (action === "select") {
               state.activeProfileId = id;
+              gtag('event', 'select_profile', { method: "existing_profile" });
               save();
               closeProfilesModal();
               buildGrid();
@@ -1135,6 +1176,7 @@
               const ok = confirm(t('confirmDelete', { name: p.name }));
               if (!ok) return;
 
+              gtag('event', 'delete_profile');
               delete state.profiles[id];
               if (state.activeProfileId === id) {
                 state.activeProfileId = Object.keys(state.profiles)[0] || null;
@@ -1179,6 +1221,8 @@
         if (!p) return;
         const ok = confirm(t('confirmReset'));
         if (!ok) return;
+
+        gtag('event', 'reset_progress', { letters_completed: lettersCompletedCount(p) });
 
         p.letters = {};
         p.animals = [];
@@ -1262,6 +1306,7 @@
       }
 
       function openHelpModal() {
+        gtag('event', 'view_help');
         els.helpModal.style.display = "flex";
         els.helpModal.setAttribute("aria-hidden", "false");
       }
@@ -1272,6 +1317,7 @@
 
       function toggleSound() {
         state.soundEnabled = !state.soundEnabled;
+        gtag('event', 'toggle_sound', { enabled: state.soundEnabled });
         updateUI();
         save();
       }
@@ -1319,6 +1365,7 @@
 
         els.startGameBtn.addEventListener("click", () => {
           initAudio();
+          gtag('event', 'tutorial_begin');
           closeWelcome();
         });
 
