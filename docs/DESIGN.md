@@ -97,6 +97,14 @@ First-time completion of any level: fixed points + one mystery animal (key like 
 
 The A-Z letter grid inherited `dir: rtl` from the Hebrew UI, so tiles rendered Z→A instead of A→Z. Fixed by forcing `.letterGrid { direction: ltr; }` in `style.css` (commit `e0f9384`) - the English alphabet always reads left-to-right regardless of UI language.
 
+## Analytics (Google Analytics 4)
+
+Every meaningful user action sends a `gtag('event', ...)`. The full contract is documented in an HTML comment right above the `gtag` config in `index.html` (single choke point - to move to a new GA property, swap `G-R72F3FHJ8B` in the script `src` and the `config` call, nothing else).
+
+Events: `tutorial_begin`, `sign_up`, `select_profile`, `delete_profile`, `reset_progress`, `change_language`, `select_content` (letter opened), `level_start`, `level_end` (fires on replays too via `first_time` param), `earn_virtual_currency` + `unlock_animal` (first-time clears only), `unlock_achievement` (`alphabet_complete` when all 26 done), `prestige` (restart for a crown), `view_item_list` (animal collection), `view_help`, `toggle_sound`.
+
+Verified end-to-end on 2026-07-17: events fire into `dataLayer` **and** reach `google-analytics.com/g/collect` with correct custom params (confirmed via the network log while driving the full flow, including the finale `unlock_achievement` → `prestige` sequence).
+
 ## Open items / next step
 
 - Repo is local-only (2 commits on `main`). Push to a new GitHub repo (under LEOkonami) to activate the GitHub Pages deploy.
