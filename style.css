@@ -928,6 +928,78 @@ select option {
     animation: shake 0.4s ease;
 }
 
+/* Level 2 word tiles: click the right word -> the card flips to reveal its
+   picture (emoji + word), so kids connect the written word to its meaning. */
+.flipCard {
+    perspective: 700px;
+    min-height: 74px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.flipCard .flipInner {
+    position: relative;
+    width: 100%;
+    min-height: 74px;
+    transition: transform 0.55s cubic-bezier(0.16, 1, 0.3, 1);
+    transform-style: preserve-3d;
+}
+
+.flipCard.flipped .flipInner {
+    transform: rotateY(180deg);
+}
+
+.flipCard .face {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 3px;
+    padding: 8px 6px;
+    border-radius: 15px;
+    border: 2px solid rgba(255, 255, 255, .12);
+    background: rgba(255, 255, 255, .06);
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+
+.flipCard:not(.flipped) .flipInner:hover {
+    transform: translateY(-2px);
+}
+
+.flipCard .front {
+    font-size: 17px;
+    font-weight: 1000;
+}
+
+.flipCard .back {
+    transform: rotateY(180deg);
+    background: linear-gradient(135deg, rgba(43, 213, 118, .3), rgba(43, 213, 118, .12));
+    border-color: var(--good);
+}
+
+.flipCard .back .pEmoji {
+    font-size: 38px;
+    line-height: 1.1;
+}
+
+.flipCard .back .wLabel {
+    font-size: 12px;
+    font-weight: 900;
+    color: var(--good);
+}
+
+.flipCard.wrong .flipInner {
+    animation: shake 0.4s ease;
+}
+
+.flipCard.wrong .front {
+    background: rgba(255, 77, 109, .25);
+    border-color: var(--bad);
+}
+
 @keyframes shake {
     0%, 100% { transform: translateX(0); }
     20% { transform: translateX(-8px); }

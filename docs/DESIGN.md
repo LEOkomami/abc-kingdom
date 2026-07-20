@@ -65,7 +65,7 @@ Removed (not applicable to this game): operation selector (×/÷), board-size se
 
 **The 3 levels:**
 1. **Picture Hunt (10 pts)** - 12 emoji tiles (5 correct + 7 distractors from other letters), click all 5 that start with the letter
-2. **Word Hunt (20 pts)** - same mechanic with 12 written words
+2. **Word Hunt (20 pts)** - 12 written words; each correct word tile flips over to reveal its picture (emoji + word) so kids connect the written word to its meaning. All words are drawn from the `items` pool so every one has a picture to flip to.
 3. **Word Scribe (up to 30 pts)** - 5 words shown one at a time with their emoji; type/copy each (case-insensitive), 6 pts per word
 
 First-time completion of any level: fixed points + one mystery animal (key like `"A:l1"`) + success overlay + confetti, then back to the letter modal with the next level unlocked.

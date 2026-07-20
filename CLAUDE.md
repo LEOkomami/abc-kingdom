@@ -23,7 +23,7 @@ Open http://localhost:8080. No server restart needed - just refresh. Note: `sw.j
 | File | Purpose |
 |------|---------|
 | `index.html` | All markup + game logic (IIFE at the bottom) |
-| `letters.js` | `LETTERS_DATA`: per-letter `items` ({e: emoji, w: word}) and `words` arrays. Self-validates on load (console error if a word doesn't start with its letter) |
+| `letters.js` | `LETTERS_DATA`: per-letter `items` ({e: emoji, w: word}). Levels 1/2/3 all draw from `items`. `words` array is an extra plain-word list, currently unused by the game but still validated/kept. Self-validates on load (console error if a word doesn't start with its letter) |
 | `translations.js` | `translations` object: he (RTL, default) / en / de. UI strings + 44 animal names |
 | `style.css` | Base theme copied from multiplication-kingdom + ABC additions at the bottom (letterGrid, pickTile, typeBox...) |
 | `sw.js` | Offline cache. **Bump `CACHE_NAME` when shipping changes** |
@@ -33,7 +33,7 @@ Open http://localhost:8080. No server restart needed - just refresh. Note: `sw.j
 
 - `localStorage` key: `abc_kingdom_v1` (plus `abc_kingdom_v1_skipWelcome`)
 - Profile shape: `{ id, name, avatar, createdAt, stats: {points}, letters: { A: {l1,l2,l3} }, animals: [{emoji,id,key:"A:l1"}], crowns }`
-- Level rules: L1=10pts, L2=20pts, L3=6pts/word (5 words). Levels unlock sequentially per letter. Rewards (points + 1 mystery animal) only on FIRST completion; replays allowed with no rewards
+- Level rules: L1=10pts (emoji shown, correct reveals the word), L2=20pts (word shown, correct flips the card to reveal the picture), L3=6pts/word (5 words). Levels unlock sequentially per letter. Rewards (points + 1 mystery animal) only on FIRST completion; replays allowed with no rewards
 - A letter counts as "completed" with >=1 level done. All 26 completed => crown ceremony => optional restart (crowns kept, letters+animals reset, points kept)
 - i18n: `data-t` attributes + `t(key, params)`; Hebrew is RTL - English game content is wrapped in `.ltrText`
 

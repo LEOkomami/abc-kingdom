@@ -13,7 +13,7 @@ Sister project of [Multiplication Kingdom](../multiplication-kingdom) - same des
 | Level | Game | Points |
 |-------|------|--------|
 | 1 | **Picture Hunt** - click all the emoji pictures that start with the letter | 10 |
-| 2 | **Word Hunt** - click all the words that start with the letter | 20 |
+| 2 | **Word Hunt** - click all the words that start with the letter; each correct word flips to reveal its picture | 20 |
 | 3 | **Word Scribe** - copy 5 example words into the text box | up to 30 (6 per word) |
 
 - Levels unlock in order (1 → 2 → 3) per letter

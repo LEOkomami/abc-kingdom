@@ -1,5 +1,8 @@
 // ABC Kingdom - Alphabet content data.
-// For every letter: `items` = emoji + English word (Levels 1 & 3), `words` = English words (Level 2).
+// For every letter: `items` = emoji + English word. Levels 1, 2 and 3 all draw
+// from `items` (Level 2 shows the word and flips to reveal the emoji, so each
+// word needs a picture). `words` is an extra plain-word list, currently unused
+// by the game but kept (and validated) for future word-only content.
 // INVARIANT: every item word and every word MUST start with its letter (validated below at load time).
 const LETTERS_DATA = {
     A: {

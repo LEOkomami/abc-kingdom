@@ -72,7 +72,7 @@ const translations = {
         wrongPick: "אופס! זה לא מתחיל באות {letter}",
         wrongType: "כמעט! נסו להעתיק שוב",
         help_level1: "מסתכלים על כל התמונות ולוחצים רק על אלה שהמילה שלהן באנגלית מתחילה באות הנבחרת. תמונה נכונה תהפוך לירוקה ותציג את המילה.",
-        help_level2: "קוראים את כל המילים ולוחצים רק על אלה שמתחילות באות הנבחרת.",
+        help_level2: "קוראים את כל המילים ולוחצים רק על אלה שמתחילות באות הנבחרת. מילה נכונה מתהפכת ומראה את התמונה שלה.",
         help_level3: "רואים מילה גדולה על המסך ומעתיקים אותה בדיוק לתיבת הכתיבה. אותיות גדולות/קטנות לא משנות.",
         // Help modal
         helpTitle: "מדריך לממלכה 📖",
@@ -209,7 +209,7 @@ const translations = {
         wrongPick: "Oops! That doesn't start with {letter}",
         wrongType: "Almost! Try copying it again",
         help_level1: "Look at all the pictures and click only the ones whose English word starts with the chosen letter. A correct picture turns green and shows its word.",
-        help_level2: "Read all the words and click only the ones that start with the chosen letter.",
+        help_level2: "Read all the words and click only the ones that start with the chosen letter. A correct word flips over to show its picture.",
         help_level3: "A big word appears on screen - copy it exactly into the text box. Uppercase/lowercase doesn't matter.",
         // Help modal
         helpTitle: "Kingdom Guide 📖",
@@ -346,7 +346,7 @@ const translations = {
         wrongPick: "Ups! Das beginnt nicht mit {letter}",
         wrongType: "Fast! Versuche es nochmal abzuschreiben",
         help_level1: "Schau dir alle Bilder an und klicke nur auf die, deren englisches Wort mit dem gewählten Buchstaben beginnt. Ein richtiges Bild wird grün und zeigt sein Wort.",
-        help_level2: "Lies alle Wörter und klicke nur auf die, die mit dem gewählten Buchstaben beginnen.",
+        help_level2: "Lies alle Wörter und klicke nur auf die, die mit dem gewählten Buchstaben beginnen. Ein richtiges Wort dreht sich um und zeigt sein Bild.",
         help_level3: "Ein großes Wort erscheint auf dem Bildschirm - schreibe es genau in das Textfeld ab. Groß-/Kleinschreibung ist egal.",
         // Help modal
         helpTitle: "Königreich-Handbuch 📖",

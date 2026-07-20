@@ -154,6 +154,7 @@
                 <option value="🦊">🦊</option>
                 <option value="🦁">🦁</option>
                 <option value="🦄">🦄</option>
+                <option value="🐬">🐬</option>
                 <option value="🐸">🐸</option>
                 <option value="🐵">🐵</option>
                 <option value="🐼">🐼</option>
@@ -788,18 +789,21 @@
 
         gtag('event', 'level_start', { level_name: `${letter}_l${n}` });
 
-        if (n === 1) runPickLevel(letter, "items");
-        else if (n === 2) runPickLevel(letter, "words");
+        if (n === 1) runPickLevel(letter, "picture");
+        else if (n === 2) runPickLevel(letter, "word");
         else runTypeLevel(letter);
       }
 
       // Levels 1 & 2: click all tiles that start with the letter.
-      // field = "items" (emoji tiles) or "words" (text tiles).
-      function runPickLevel(letter, field) {
+      // mode = "picture" (L1: emoji shown, correct reveals the word)
+      //      | "word"    (L2: word shown, correct flips to reveal the picture)
+      // Both draw from the `items` pool (emoji + word) so every word tile has a
+      // picture to flip to.
+      function runPickLevel(letter, mode) {
+        const wordMode = mode === "word";
         const data = LETTERS_DATA[letter];
-        const isEmoji = field === "items";
 
-        const pool = isEmoji ? data.items : data.words.map(w => ({ w }));
+        const pool = data.items;
         const targets = shuffle(pool).slice(0, Math.min(PICK_TARGETS, pool.length));
 
         // Distractors come from other letters; defensively drop anything that
@@ -807,8 +811,7 @@
         const distractorPool = [];
         for (const other of ALPHABET) {
           if (other === letter) continue;
-          const src = isEmoji ? LETTERS_DATA[other].items : LETTERS_DATA[other].words.map(w => ({ w }));
-          for (const item of src) {
+          for (const item of LETTERS_DATA[other].items) {
             if (item.w[0].toUpperCase() !== letter) distractorPool.push(item);
           }
         }
@@ -822,39 +825,68 @@
         const total = targets.length;
         let found = 0;
 
-        els.levelInstruction.textContent = t(isEmoji ? 'level1Instr' : 'level2Instr', { letter, total });
+        els.levelInstruction.textContent = t(wordMode ? 'level2Instr' : 'level1Instr', { letter, total });
         els.levelProgressPill.textContent = t('foundCount', { found, total });
 
         const grid = document.createElement("div");
         grid.className = "pickGrid";
         els.levelContainer.appendChild(grid);
 
+        const registerFound = () => {
+          found++;
+          els.levelProgressPill.textContent = t('foundCount', { found, total });
+          if (found >= total) {
+            completeLevel(letter, state.currentLevel, LEVEL_POINTS[state.currentLevel]);
+          }
+        };
+
+        const flashWrong = (el) => {
+          playSound("error");
+          el.classList.add("wrong");
+          setTimeout(() => el.classList.remove("wrong"), 450);
+        };
+
         for (const tile of tiles) {
           const d = document.createElement("div");
-          if (isEmoji) {
+
+          if (!wordMode) {
+            // Level 1: emoji up front, reveal the word on a correct pick.
             d.className = "pickTile";
             d.innerHTML = `<div class="pEmoji">${tile.e}</div><div class="pWord ltrText"></div>`;
+            d.onclick = () => {
+              if (tile.correct) {
+                playSound("success");
+                d.classList.add("correct");
+                d.querySelector(".pWord").textContent = tile.w;
+                registerFound();
+              } else {
+                flashWrong(d);
+              }
+            };
           } else {
-            d.className = "pickTile wordTile ltrText";
-            d.textContent = tile.w;
+            // Level 2: word up front, flip to reveal the picture on a correct pick.
+            d.className = "flipCard ltrText";
+            d.innerHTML = `
+              <div class="flipInner">
+                <div class="face front">${escapeHtml(tile.w)}</div>
+                <div class="face back">
+                  <div class="pEmoji">${tile.e}</div>
+                  <div class="wLabel">${escapeHtml(tile.w)}</div>
+                </div>
+              </div>`;
+            d.onclick = () => {
+              if (d.classList.contains("flipped")) return;
+              if (tile.correct) {
+                playSound("success");
+                d.classList.add("flipped");
+                d.style.pointerEvents = "none";
+                registerFound();
+              } else {
+                flashWrong(d);
+              }
+            };
           }
 
-          d.onclick = () => {
-            if (tile.correct) {
-              playSound("success");
-              d.classList.add("correct");
-              if (isEmoji) d.querySelector(".pWord").textContent = tile.w;
-              found++;
-              els.levelProgressPill.textContent = t('foundCount', { found, total });
-              if (found >= total) {
-                completeLevel(letter, state.currentLevel, LEVEL_POINTS[state.currentLevel]);
-              }
-            } else {
-              playSound("error");
-              d.classList.add("wrong");
-              setTimeout(() => d.classList.remove("wrong"), 450);
-            }
-          };
           grid.appendChild(d);
         }
       }
