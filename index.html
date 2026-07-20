@@ -2,6 +2,29 @@
 <html lang="he" dir="rtl">
 
 <head>
+  <!--
+    Content-Security-Policy — this is a static, client-side app on GitHub Pages, so we
+    cannot mint per-request nonces. The inline scripts (the GA bootstrap below and the
+    game IIFE at the bottom) therefore still need 'unsafe-inline', which means this CSP
+    is NOT an XSS shield. Its job here is to shrink the blast radius of a supply-chain
+    compromise: object-src 'none' + base-uri 'self' block plugin/base-tag tricks, and the
+    tight script-src / connect-src allowlists stop a hijacked CDN script from pulling a
+    stage-2 payload or beaconing data out to an attacker-controlled origin.
+    To upgrade this into a real XSS shield later: move the inline scripts into their own
+    files and drop 'unsafe-inline'.
+  -->
+  <meta http-equiv="Content-Security-Policy" content="
+    default-src 'self';
+    script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://cdn.jsdelivr.net;
+    style-src 'self' 'unsafe-inline';
+    img-src 'self' data: https://www.googletagmanager.com https://*.google-analytics.com;
+    connect-src 'self' https://www.googletagmanager.com https://*.google-analytics.com https://*.analytics.google.com;
+    font-src 'self';
+    manifest-src 'self';
+    worker-src 'self';
+    object-src 'none';
+    base-uri 'self';
+    form-action 'self'" />
   <!-- Google tag (gtag.js) -->
   <!--
     ANALYTICS EVENT REFERENCE (Google Analytics 4)
@@ -343,13 +366,13 @@
   <footer
     style="text-align:center; padding: 20px 0; color: rgba(255,255,255,0.3); font-weight: 900; letter-spacing: 2px; font-size: 14px;">
     <div>A KONAMI APP</div>
-    <a href="https://buymeacoffee.com/leokonami" target="_blank"
+    <a href="https://buymeacoffee.com/leokonami" target="_blank" rel="noopener noreferrer"
       style="display:inline-flex; align-items:center; gap:6px; margin-top:8px; text-decoration:none; color:rgba(255,209,102,0.6); font-size:12px; transition:opacity 0.2s;">
       <span style="font-size:16px;">☕</span> Buy me a coffee
     </a>
   </footer>
 
-  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" integrity="sha384-HAH79XdRvHr6axVGh4xQWVCp14kcd32bNk4Xu0sHDHtFQ42n6BAM8ykvB47dGz6D" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
   <script>
     (function () {
