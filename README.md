@@ -12,11 +12,11 @@ Sister project of [Multiplication Kingdom](../multiplication-kingdom) - same des
 
 | Level | Game | Points |
 |-------|------|--------|
-| 1 | **Picture Hunt** - click all the emoji pictures that start with the letter | 10 |
-| 2 | **Word Hunt** - click all the words that start with the letter; each correct word flips to reveal its picture | 20 |
-| 3 | **Word Scribe** - copy 5 example words into the text box | up to 30 (6 per word) |
+| 1 | **Word Hunt** - click all the words that start with the letter; each correct word flips to reveal its picture | 10 |
+| 2 | **Picture Hunt** - click all the emoji pictures that start with the letter | 20 |
+| 3 | **Word Scribe** - copy the example words into the text box (typing is case-insensitive) | up to 30 (6 per word) |
 
-- Levels unlock in order (1 → 2 → 3) per letter
+- Levels unlock in order (1 → 2 → 3) per letter, and **the same set of words/pictures runs through all three levels** so a child reads the word, then matches the picture, then writes it - one consistent learning curve per letter
 - Every level completed for the first time grants a **mystery fantasy animal** 🦄
 - Complete **at least one level in every letter** to win a **crown** 👑 and restart the adventure
 

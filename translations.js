@@ -20,7 +20,7 @@ const translations = {
         startAdv: "מתחילים בהרפתקה! 🚀",
         dontShow: "אל תציג זאת שוב",
         welcomeTitle: "ברוכים הבאים לממלכת האותיות! 🏰",
-        welcomeText: "בממלכה הזו לומדים את <b>אותיות ה-ABC באנגלית</b> דרך משחק והרפתקאות!<br>לכל אות שלושה שלבים: תמונות, מילים וכתיבה. השלימו שלבים, אספו חיות נדירות וזכו בכתרים. 🏆",
+        welcomeText: "בממלכה הזו לומדים את <b>אותיות ה-ABC באנגלית</b> דרך משחק והרפתקאות!<br>לכל אות שלושה שלבים: מילים, תמונות וכתיבה. השלימו שלבים, אספו חיות נדירות וזכו בכתרים. 🏆",
         continueBtn: "המשך הלאה!",
         kingdomTitle: "הממלכה שלי: כל החיות שאספת",
         collectionTitle: "אוסף חיות הפנטזיה",
@@ -77,9 +77,9 @@ const translations = {
         // Help modal
         helpTitle: "מדריך לממלכה 📖",
         helpIntroTitle: "איך משחקים?",
-        helpIntroText: "בממלכה הזו לומדים את אותיות ה-ABC! לוחצים על אות בלוח, ולכל אות שלושה שלבים: <b>שלב 1</b> - מציאת תמונות שמתחילות באות, <b>שלב 2</b> - מציאת מילים שמתחילות באות, <b>שלב 3</b> - העתקת מילים. שלב נפתח רק אחרי שמסיימים את הקודם.",
+        helpIntroText: "בממלכה הזו לומדים את אותיות ה-ABC! לוחצים על אות בלוח, ולכל אות שלושה שלבים: <b>שלב 1</b> - מציאת מילים שמתחילות באות, <b>שלב 2</b> - מציאת תמונות שמתחילות באות, <b>שלב 3</b> - העתקת מילים. שלב נפתח רק אחרי שמסיימים את הקודם.",
         helpPointsTitle: "שיטת הנקודות 💎",
-        helpPointsText: "• שלב 1 (תמונות) = <b>10 נקודות</b>.<br>• שלב 2 (מילים) = <b>20 נקודות</b>.<br>• שלב 3 (כתיבה) = <b>עד 30 נקודות</b> (6 על כל מילה).<br>כל שלב שמושלם בפעם הראשונה מעניק גם חיית פלא לאוסף!",
+        helpPointsText: "• שלב 1 (מילים) = <b>10 נקודות</b>.<br>• שלב 2 (תמונות) = <b>20 נקודות</b>.<br>• שלב 3 (כתיבה) = <b>עד 30 נקודות</b> (6 על כל מילה).<br>כל שלב שמושלם בפעם הראשונה מעניק גם חיית פלא לאוסף!",
         helpPrestigeTitle: "כתרים ומלכות 👑",
         helpPrestigeText: "כשמשלימים לפחות שלב אחד בכל 26 האותיות, זוכים בכתר! אפשר להתחיל הרפתקה חדשה ולאסוף עוד כתרים וחיות.",
         // Prestige
@@ -157,7 +157,7 @@ const translations = {
         startAdv: "Start Adventure! 🚀",
         dontShow: "Don't show again",
         welcomeTitle: "Welcome to ABC Kingdom! 🏰",
-        welcomeText: "In this kingdom, you learn the <b>ABC</b> through quests and adventures!<br>Every letter has three levels: pictures, words, and writing. Complete levels, collect rare animals, and earn crowns. 🏆",
+        welcomeText: "In this kingdom, you learn the <b>ABC</b> through quests and adventures!<br>Every letter has three levels: words, pictures, and writing. Complete levels, collect rare animals, and earn crowns. 🏆",
         continueBtn: "Continue!",
         kingdomTitle: "My Kingdom: Collected Animals",
         collectionTitle: "Fantasy Animal Collection",
@@ -214,9 +214,9 @@ const translations = {
         // Help modal
         helpTitle: "Kingdom Guide 📖",
         helpIntroTitle: "How to Play?",
-        helpIntroText: "In this kingdom you learn the ABC! Click a letter on the board. Every letter has three levels: <b>Level 1</b> - find pictures that start with the letter, <b>Level 2</b> - find words that start with the letter, <b>Level 3</b> - copy words. A level unlocks only after finishing the previous one.",
+        helpIntroText: "In this kingdom you learn the ABC! Click a letter on the board. Every letter has three levels: <b>Level 1</b> - find words that start with the letter, <b>Level 2</b> - find pictures that start with the letter, <b>Level 3</b> - copy words. A level unlocks only after finishing the previous one.",
         helpPointsTitle: "Points System 💎",
-        helpPointsText: "• Level 1 (Pictures) = <b>10 points</b>.<br>• Level 2 (Words) = <b>20 points</b>.<br>• Level 3 (Writing) = <b>up to 30 points</b> (6 per word).<br>Each level completed for the first time also grants a mystery animal!",
+        helpPointsText: "• Level 1 (Words) = <b>10 points</b>.<br>• Level 2 (Pictures) = <b>20 points</b>.<br>• Level 3 (Writing) = <b>up to 30 points</b> (6 per word).<br>Each level completed for the first time also grants a mystery animal!",
         helpPrestigeTitle: "Crowns & Prestige 👑",
         helpPrestigeText: "Complete at least one level in all 26 letters to earn a crown! You can then start a new adventure and collect more crowns and animals.",
         // Prestige
@@ -294,7 +294,7 @@ const translations = {
         startAdv: "Abenteuer starten! 🚀",
         dontShow: "Nicht wieder anzeigen",
         welcomeTitle: "Willkommen im ABC Königreich! 🏰",
-        welcomeText: "In diesem Königreich lernst du das <b>englische ABC</b> durch Abenteuer!<br>Jeder Buchstabe hat drei Level: Bilder, Wörter und Schreiben. Schließe Level ab, sammle seltene Tiere und verdiene Kronen. 🏆",
+        welcomeText: "In diesem Königreich lernst du das <b>englische ABC</b> durch Abenteuer!<br>Jeder Buchstabe hat drei Level: Wörter, Bilder und Schreiben. Schließe Level ab, sammle seltene Tiere und verdiene Kronen. 🏆",
         continueBtn: "Weiter!",
         kingdomTitle: "Mein Königreich: Gesammelte Tiere",
         collectionTitle: "Fantasie-Tiersammlung",
@@ -351,9 +351,9 @@ const translations = {
         // Help modal
         helpTitle: "Königreich-Handbuch 📖",
         helpIntroTitle: "Wie spielt man?",
-        helpIntroText: "In diesem Königreich lernst du das ABC! Klicke auf einen Buchstaben. Jeder Buchstabe hat drei Level: <b>Level 1</b> - finde Bilder, die mit dem Buchstaben beginnen, <b>Level 2</b> - finde Wörter, <b>Level 3</b> - schreibe Wörter ab. Ein Level öffnet sich erst nach dem vorherigen.",
+        helpIntroText: "In diesem Königreich lernst du das ABC! Klicke auf einen Buchstaben. Jeder Buchstabe hat drei Level: <b>Level 1</b> - finde Wörter, die mit dem Buchstaben beginnen, <b>Level 2</b> - finde Bilder, <b>Level 3</b> - schreibe Wörter ab. Ein Level öffnet sich erst nach dem vorherigen.",
         helpPointsTitle: "Punktesystem 💎",
-        helpPointsText: "• Level 1 (Bilder) = <b>10 Punkte</b>.<br>• Level 2 (Wörter) = <b>20 Punkte</b>.<br>• Level 3 (Schreiben) = <b>bis zu 30 Punkte</b> (6 pro Wort).<br>Jedes zum ersten Mal abgeschlossene Level bringt auch ein Überraschungstier!",
+        helpPointsText: "• Level 1 (Wörter) = <b>10 Punkte</b>.<br>• Level 2 (Bilder) = <b>20 Punkte</b>.<br>• Level 3 (Schreiben) = <b>bis zu 30 Punkte</b> (6 pro Wort).<br>Jedes zum ersten Mal abgeschlossene Level bringt auch ein Überraschungstier!",
         helpPrestigeTitle: "Kronen & Prestige 👑",
         helpPrestigeText: "Schließe mindestens ein Level bei allen 26 Buchstaben ab, um eine Krone zu verdienen! Danach kannst du ein neues Abenteuer starten und mehr Kronen und Tiere sammeln.",
         // Prestige

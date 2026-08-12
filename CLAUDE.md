@@ -33,7 +33,10 @@ Open http://localhost:8080. No server restart needed - just refresh. Note: `sw.j
 
 - `localStorage` key: `abc_kingdom_v1` (plus `abc_kingdom_v1_skipWelcome`)
 - Profile shape: `{ id, name, avatar, createdAt, stats: {points}, letters: { A: {l1,l2,l3} }, animals: [{emoji,id,key:"A:l1"}], crowns }`
-- Level rules: L1=10pts (emoji shown, correct reveals the word), L2=20pts (word shown, correct flips the card to reveal the picture), L3=6pts/word (5 words). Levels unlock sequentially per letter. Rewards (points + 1 mystery animal) only on FIRST completion; replays allowed with no rewards
+- **Level order lives in one config: `LEVEL_DEF`** (top of the IIFE). To reorder levels, edit only that table. Each entry has `mechanic` (word|picture|type) and `strId` (which `level<strId>Title/Instr` + `help_level<strId>` strings label it). Current order: L1=Word Hunt (word shown, correct flips to its picture, 10pts), L2=Picture Hunt (emoji shown, correct reveals the word, 20pts), L3=Word Scribe (type it, 6pts/word). Because `strId` decouples labels from slot number, the translation strings were NOT renumbered when levels swapped.
+- **`learningItemsFor(letter)` returns the letter's fixed learning set** (`items.slice(0, min(5, len))`, deterministic). All three levels use this SAME set so the child sees the same words/pictures read -> match -> write. Distractors in L1/L2 are still random from other letters.
+- Level 3 typing is case-insensitive via `normWord()` (lowercase + strip non-alphanumerics), and `check()` guards `idx >= total` so extra Check/Enter presses after the last word don't throw.
+- Levels unlock sequentially per letter. Rewards (points + 1 mystery animal) only on FIRST completion; replays allowed with no rewards
 - A letter counts as "completed" with >=1 level done. All 26 completed => crown ceremony => optional restart (crowns kept, letters+animals reset, points kept)
 - i18n: `data-t` attributes + `t(key, params)`; Hebrew is RTL - English game content is wrapped in `.ltrText`
 

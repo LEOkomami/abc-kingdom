@@ -63,14 +63,18 @@ Removed (not applicable to this game): operation selector (×/÷), board-size se
 
 **Letter modal:** big letter (e.g. "A a") + 3 level rows. Level 1 always unlocked; Level 2 unlocks after Level 1; Level 3 after Level 2. Completed levels are replayable for practice with no extra reward.
 
-**The 3 levels:**
-1. **Picture Hunt (10 pts)** - 12 emoji tiles (5 correct + 7 distractors from other letters), click all 5 that start with the letter
-2. **Word Hunt (20 pts)** - 12 written words; each correct word tile flips over to reveal its picture (emoji + word) so kids connect the written word to its meaning. All words are drawn from the `items` pool so every one has a picture to flip to.
-3. **Word Scribe (up to 30 pts)** - 5 words shown one at a time with their emoji; type/copy each (case-insensitive), 6 pts per word
+**The 3 levels (deliberate learning curve - the SAME set of items runs through all three):**
+1. **Word Hunt (10 pts)** - 12 written words; each correct word tile flips over to reveal its picture (emoji + word), connecting the written word to its meaning. Read first.
+2. **Picture Hunt (20 pts)** - 12 emoji tiles; click all that start with the letter, each correct one reveals its word. Match the meaning.
+3. **Word Scribe (up to 30 pts)** - the same words shown one at a time with their emoji; type/copy each, 6 pts per word. Write it.
+
+The three levels intentionally progress read -> match -> write over the **same 5 items** per letter (`learningItemsFor(letter)`, a deterministic slice of the letter's `items`). Distractors in Levels 1-2 are random foils from other letters. Level order is data-driven via the `LEVEL_DEF` table, so reordering is a one-line change.
+
+Typing (Level 3) is case-insensitive (`normWord()` lowercases both sides) and guards against extra Check/Enter presses after the final word.
 
 First-time completion of any level: fixed points + one mystery animal (key like `"A:l1"`) + success overlay + confetti, then back to the letter modal with the next level unlocked.
 
-**Content data (`letters.js`):** per letter, `{ items: [{e, w}, ...], words: [...] }`. Distractors for Levels 1-2 are drawn from other letters' pools, defensively filtered so nothing accidentally starts with the target letter.
+**Content data (`letters.js`):** per letter, `{ items: [{e, w}, ...], words: [...] }`. All three levels draw their targets from `items` (so every word has a picture); `words` is retained/validated but currently unused by the game. Distractors are drawn from other letters' `items`, defensively filtered so nothing accidentally starts with the target letter.
 
 **Finishing the whole alphabet:** when all 26 letters have >=1 level done, a full-screen crown ceremony fires ("🏆 A-Z 🏆" + confetti). "Start New Adventure" grants +1 permanent crown, resets `letters` and `animals` (points are kept) so the child can play again and collect more crowns/animals. "Keep Playing" just dismisses the overlay without resetting anything.
 
