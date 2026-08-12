@@ -652,6 +652,18 @@ select {
     flex-shrink: 0;
 }
 
+/* Center the avatar emoji in the picker - both the collapsed value and the
+   open dropdown options. LTR keeps a single emoji from hugging the RTL edge. */
+#newProfileAvatar {
+    direction: ltr;
+    text-align: center;
+    text-align-last: center;
+}
+
+#newProfileAvatar option {
+    text-align: center;
+}
+
 .formRow .btn {
     white-space: nowrap;
     flex-shrink: 0;

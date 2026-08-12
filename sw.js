@@ -1,4 +1,4 @@
-const CACHE_NAME = 'abc-kingdom-v4';
+const CACHE_NAME = 'abc-kingdom-v5';
 const ASSETS = [
     './',
     './index.html',
