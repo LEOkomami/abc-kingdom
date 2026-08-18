@@ -587,6 +587,69 @@
         }
       }
 
+      // ---------- Word speech (device TTS) ----------
+      // Speaks the English word/letter a child taps. Uses the device's own
+      // voices, so there is nothing to download and nothing to cache. If the
+      // device has no English voice it stays silent rather than breaking play.
+      const SPEECH_LANGS = ["en"];
+      const SPEECH_PREFERRED = "en-us";
+
+      let speechVoice = null;
+      let speechUtterance = null; // live ref: Chrome garbage-collects speaking utterances
+      let speechTimer = 0;
+
+      function pickSpeechVoice() {
+        const all = speechSynthesis.getVoices();
+        if (!all.length) return; // Chrome returns [] until voiceschanged fires
+        const norm = (v) => v.lang.replace("_", "-").toLowerCase();
+        const match = all.filter((v) =>
+          SPEECH_LANGS.some((l) => norm(v) === l || norm(v).startsWith(l + "-"))
+        );
+        const score = (v) =>
+          (/natural|neural|online/i.test(v.name) ? 4 : 0) +
+          (/google/i.test(v.name) ? 2 : 0) +
+          (norm(v) === SPEECH_PREFERRED ? 1 : 0) +
+          (!navigator.onLine && !v.localService ? -10 : 0);
+        speechVoice = match.sort((a, b) => score(b) - score(a))[0] || null;
+      }
+
+      if ("speechSynthesis" in window) {
+        pickSpeechVoice();
+        speechSynthesis.addEventListener("voiceschanged", pickSpeechVoice);
+      }
+
+      function speakText(text) {
+        if (!state.soundEnabled || !("speechSynthesis" in window)) return;
+        pickSpeechVoice();
+        if (!speechVoice) return;
+        clearTimeout(speechTimer);
+        speechSynthesis.cancel(); // rapid taps: the newest word wins
+        const u = new SpeechSynthesisUtterance(text);
+        u.voice = speechVoice;
+        // Pinned, never inherited: setLanguage() rewrites <html lang> at runtime.
+        u.lang = speechVoice.lang;
+        u.rate = 0.8;
+        u.pitch = 1.05;
+        speechUtterance = u;
+        u.onend = u.onerror = () => {
+          if (speechUtterance === u) speechUtterance = null;
+        };
+        // Chrome drops speak() called in the same tick as cancel(); resume()
+        // unsticks a queue left paused by an interrupted utterance.
+        speechTimer = setTimeout(() => {
+          speechSynthesis.resume();
+          speechSynthesis.speak(u);
+        }, 60);
+      }
+
+      function speakItem(item) {
+        speakText(item.w);
+      }
+
+      function speakLetter(L) {
+        speakText(L);
+      }
+
       function triggerConfetti() {
         if (typeof confetti === "function") {
           confetti({
@@ -753,6 +816,7 @@
           d.title = L;
           d.onclick = () => {
             initAudio();
+            speakLetter(L);
             openLetterModal(L);
           };
           els.grid.appendChild(d);
@@ -897,6 +961,7 @@
             d.className = "pickTile";
             d.innerHTML = `<div class="pEmoji">${tile.e}</div><div class="pWord ltrText"></div>`;
             d.onclick = () => {
+              speakItem(tile);
               if (tile.correct) {
                 playSound("success");
                 d.classList.add("correct");
@@ -919,6 +984,7 @@
               </div>`;
             d.onclick = () => {
               if (d.classList.contains("flipped")) return;
+              speakItem(tile);
               if (tile.correct) {
                 playSound("success");
                 d.classList.add("flipped");
@@ -974,6 +1040,7 @@
           if (idx >= total) return;
           if (normWord(input.value) === normWord(words[idx].w)) {
             playSound("success");
+            speakItem(words[idx]); // before idx++ below
             idx++;
             if (idx >= total) {
               completeLevel(letter, 3, total * POINTS_PER_WORD);
@@ -1394,6 +1461,7 @@
 
       function toggleSound() {
         state.soundEnabled = !state.soundEnabled;
+        if (!state.soundEnabled && "speechSynthesis" in window) speechSynthesis.cancel();
         gtag('event', 'toggle_sound', { enabled: state.soundEnabled });
         updateUI();
         save();
