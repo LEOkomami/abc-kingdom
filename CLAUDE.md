@@ -40,6 +40,42 @@ Open http://localhost:8080. No server restart needed - just refresh. Note: `sw.j
 - A letter counts as "completed" with >=1 level done. All 26 completed => crown ceremony => optional restart (crowns kept, letters+animals reset, points kept)
 - i18n: `data-t` attributes + `t(key, params)`; Hebrew is RTL - English game content is wrapped in `.ltrText`
 
+## Audio (spoken words)
+
+Tapping anything that shows a word says it out loud, using the **device's own
+English voices** via `speechSynthesis`. No audio files, nothing extra cached.
+The whole feature is one block in `index.html` (search `Word speech`) plus five
+one-line call sites.
+
+| Piece | Where |
+|-------|-------|
+| `speakItem(item)` / `speakLetter(L)` | the speech block in `index.html`, right after `playSound()` |
+| Voice choice | `pickSpeechVoice()`: prefers Natural/Neural, then Google, then exact `en-US` |
+| Call sites | picture tiles, flip cards, Word Scribe `check()`, letter grid `onclick` |
+
+Rules to keep when editing:
+
+- **Every tap speaks**, correct or wrong. A wrong pick says its own word on
+  purpose, so mistakes still teach. Do not "fix" this to correct-only.
+- Gated on the existing `state.soundEnabled` toggle; `toggleSound()` also calls
+  `speechSynthesis.cancel()` so muting cuts a word mid-sentence.
+- `u.lang` is pinned from the chosen voice and must never be left to inherit:
+  `setLanguage()` rewrites `<html lang>` at runtime, so a Hebrew UI would
+  otherwise read English words with a Hebrew voice.
+- Two Chrome quirks are worked around deliberately: the utterance is held in
+  `speechUtterance` (Chrome garbage-collects speaking utterances, cutting them
+  off), and `speak()` runs in a 60 ms `setTimeout` after `cancel()` (Chrome
+  swallows a `speak()` issued in the same tick).
+- No voice on the device means silence, never an error. Verify that path by
+  temporarily setting `SPEECH_LANGS = ["xx"]`.
+- Word Scribe speaks `words[idx]` **before** `idx++` on the next line.
+
+The sister game `../alefbet-kingdom` deliberately does this differently (it
+ships recorded MP3s, because Hebrew device voices are missing on many Windows
+and Android setups). Both expose the same `speakItem`/`speakLetter` API, so
+switching this game to files later would not touch a single call site. A voice
+test page lives at `../alefbet-kingdom/tts-demo.html`.
+
 ## Constraints / Gotchas
 
 - Content letters/words are ALWAYS English regardless of UI language

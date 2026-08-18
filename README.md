@@ -25,6 +25,7 @@ Sister project of [Multiplication Kingdom](../multiplication-kingdom) - same des
 - 3 UI languages: Hebrew (default, RTL), English, German - game content is always the English ABC
 - Multi-profile with champions table (leaderboard)
 - Sound effects (WebAudio, toggleable), confetti celebrations
+- Spoken words: tap any word or letter to hear it, using the device's own English voice
 - PWA: installable, works offline (service worker cache)
 - No build step, no dependencies - pure HTML/CSS/JS
 
