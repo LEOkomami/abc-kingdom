@@ -74,7 +74,8 @@ The sister game `../alefbet-kingdom` deliberately does this differently (it
 ships recorded MP3s, because Hebrew device voices are missing on many Windows
 and Android setups). Both expose the same `speakItem`/`speakLetter` API, so
 switching this game to files later would not touch a single call site. A voice
-test page lives at `../alefbet-kingdom/tts-demo.html`.
+test page lives at `../alefbet-kingdom/tts-demo.html`, and the MP3 generator
+(should this game ever switch to files) at `../alefbet-kingdom/tools/generate_word_audio.py`.
 
 ## Constraints / Gotchas
 
